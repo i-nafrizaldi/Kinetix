@@ -52,7 +52,7 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   User: 'User',
-  Post: 'Post'
+  Address: 'Address'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -74,24 +74,38 @@ export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof
 export const UserScalarFieldEnum = {
   id: 'id',
   email: 'email',
-  name: 'name',
+  fullName: 'fullName',
   password: 'password',
+  isVerify: 'isVerify',
+  role: 'role',
   createdAt: 'createdAt',
-  isDelete: 'isDelete'
+  isDelete: 'isDelete',
+  token: 'token',
+  tokenExpiresIn: 'tokenExpiresIn',
+  updatedAt: 'updatedAt'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
-export const PostScalarFieldEnum = {
+export const AddressScalarFieldEnum = {
   id: 'id',
-  title: 'title',
-  content: 'content',
-  published: 'published',
-  authorId: 'authorId'
+  userId: 'userId',
+  recipientName: 'recipientName',
+  phone: 'phone',
+  provinceId: 'provinceId',
+  provinceName: 'provinceName',
+  cityId: 'cityId',
+  cityName: 'cityName',
+  districtName: 'districtName',
+  postalCode: 'postalCode',
+  detail: 'detail',
+  isDefault: 'isDefault',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
-export type PostScalarFieldEnum = (typeof PostScalarFieldEnum)[keyof typeof PostScalarFieldEnum]
+export type AddressScalarFieldEnum = (typeof AddressScalarFieldEnum)[keyof typeof AddressScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -112,17 +126,25 @@ export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 
 export const UserOrderByRelevanceFieldEnum = {
   email: 'email',
-  name: 'name',
-  password: 'password'
+  fullName: 'fullName',
+  password: 'password',
+  token: 'token'
 } as const
 
 export type UserOrderByRelevanceFieldEnum = (typeof UserOrderByRelevanceFieldEnum)[keyof typeof UserOrderByRelevanceFieldEnum]
 
 
-export const PostOrderByRelevanceFieldEnum = {
-  title: 'title',
-  content: 'content'
+export const AddressOrderByRelevanceFieldEnum = {
+  recipientName: 'recipientName',
+  phone: 'phone',
+  provinceId: 'provinceId',
+  provinceName: 'provinceName',
+  cityId: 'cityId',
+  cityName: 'cityName',
+  districtName: 'districtName',
+  postalCode: 'postalCode',
+  detail: 'detail'
 } as const
 
-export type PostOrderByRelevanceFieldEnum = (typeof PostOrderByRelevanceFieldEnum)[keyof typeof PostOrderByRelevanceFieldEnum]
+export type AddressOrderByRelevanceFieldEnum = (typeof AddressOrderByRelevanceFieldEnum)[keyof typeof AddressOrderByRelevanceFieldEnum]
 
