@@ -1,8 +1,10 @@
+import Navbar from "@/components/Navbar";
+import { cn } from "@/lib/utils";
+import StoreProvider from "@/provider/StoreProvider";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter } from "next/font/google";
+import { Toaster } from "sonner";
 import "./globals.css";
-import { cn } from "@/lib/utils";
-import Navbar from "@/components/Navbar";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -39,8 +41,10 @@ export default function RootLayout({
       )}
     >
       <body className="min-h-full flex flex-col">
-        <Navbar />
-        {children}
+        <StoreProvider>
+          {children}
+          <Toaster richColors position="top-center" />
+        </StoreProvider>
       </body>
     </html>
   );

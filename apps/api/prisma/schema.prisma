@@ -25,6 +25,8 @@ model User {
   tokenExpiresIn DateTime?
   addresses      Address[]
   updatedAt      DateTime  @updatedAt
+
+  @@map("users")
 }
 
 enum Role {
