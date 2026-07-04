@@ -11,21 +11,22 @@ import {
 } from "@/components/ui/card";
 import { useFormik } from "formik";
 import { validationSchema } from "./validationSchema";
-import useLogin from "@/hooks/api/auth/useLogin";
+import useRegister from "@/hooks/api/auth/useRegister";
 import Link from "next/link";
 
-const Login = () => {
-  const { isLoading, login } = useLogin();
+const Register = () => {
+  const { isLoading, register } = useRegister();
 
   const { values, handleBlur, handleChange, handleSubmit, errors, touched } =
     useFormik({
       initialValues: {
+        fullName:'',
         email: "",
         password: "",
       },
       validationSchema,
       onSubmit: (values) => {
-        login(values);
+        register(values);
       },
     });
   return (
@@ -36,10 +37,21 @@ const Login = () => {
           <form onSubmit={handleSubmit}>
             <Card className="w-full max-w-sm">
               <CardHeader>
-                <CardTitle>Login to your account</CardTitle>
+                <CardTitle>Register to your account</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="flex flex-col gap-6">
+                  <FormInput
+                    name="fullName"
+                    label="Your Name"
+                    error={errors.fullName}
+                    isError={!touched.fullName && !errors.fullName}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    placeholder="Your Name"
+                    type="text"
+                    value={values.fullName}
+                  />
                   <FormInput
                     name="email"
                     label="Email"
@@ -67,10 +79,10 @@ const Login = () => {
               </CardContent>
               <CardFooter className="flex-col gap-2">
                 <Button className="mt-6 w-full" type="submit">
-                  Login
+                  Register
                 </Button>
-                <div>
-                  dont have account? <Link className="font-bold" href={"/register"}>Register</Link>
+                 <div>
+                   have account? <Link className="font-bold" href={"/login"}>Login</Link>
                 </div>
                 <Link className="font-bold" href={'/'} >Back to Home</Link>
               </CardFooter>
@@ -82,4 +94,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;

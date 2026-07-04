@@ -1,0 +1,4 @@
+regist
+1. user regis isi  nama, email,pw
+2. kirim email verif
+3. klik verif, isVerif true

@@ -10,6 +10,7 @@ import express, {
 import { UserRouter } from "./routers/user.router.js";
 import { PORT } from "./config.js";
 import { AuthRouter } from "./routers/auth.router.js";
+import { errorMiddleware } from "./middlewares/errorMiddleware.js";
 
 export default class App {
   readonly app: Express;
@@ -59,6 +60,9 @@ export default class App {
 
     this.app.use("/api/users", userRouter.getRouter());
     this.app.use("/api/auth", authRouter.getRouter());
+
+    
+    this.app.use(errorMiddleware);
   }
 
   public start(): void {

@@ -4,7 +4,7 @@ import { prisma } from "../../lib/prisma.js";
 
 export const registerService = async (body: Omit<User, "id">) => {
   try {
-    const { email, name, password } = body;
+    const { email, fullName, password } = body;
 
     const existingUser = await prisma.user.findFirst({
       where: { email: email },
@@ -16,7 +16,7 @@ export const registerService = async (body: Omit<User, "id">) => {
     const hashedPassword = await hashPassword(password);
 
     const newUser = await prisma.user.create({
-      data: { name: name, email: email, password: hashedPassword },
+      data: { fullName: fullName, email: email, password: hashedPassword },
     });
 
     return {
