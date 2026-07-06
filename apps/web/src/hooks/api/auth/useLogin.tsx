@@ -12,6 +12,7 @@ import { response } from "express";
 interface LoginResponses {
   message: string;
   data: User;
+  token: string;
 }
 interface LoginArgs {
   email?: string;
@@ -34,7 +35,7 @@ const useLogin = () => {
       );
 
       dispatch(loginAction(data.data));
-      // localStorage.setItem("token", data.token);
+      localStorage.setItem("token", data.token);
 
       if (data.data.role === Role.ADMIN) {
         router.push("/dashboard");

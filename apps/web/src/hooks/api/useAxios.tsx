@@ -39,7 +39,7 @@ const useAxios = () => {
     };
   }, [dispatch, token]);
 
-  return {axiosInstance};
+  return { axiosInstance };
 };
 
 export default useAxios;

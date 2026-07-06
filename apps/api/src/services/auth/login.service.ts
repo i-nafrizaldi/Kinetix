@@ -1,4 +1,4 @@
-import { sign } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import type { User } from "../../../generated/prisma/client.js";
 import { comparePassword } from "../../lib/bcrypt.js";
 import { prisma } from "../../lib/prisma.js";
@@ -14,7 +14,7 @@ export const loginService = async (body: Pick<User, "email" | "password">) => {
       throw new Error("Incorrect email or password");
     }
 
-    if (user.isDelete === true) {
+    if (user.status === "INACTIVE") {
       throw new Error(" This account has been deleted !");
     }
 
@@ -24,7 +24,7 @@ export const loginService = async (body: Pick<User, "email" | "password">) => {
       throw new Error("Incorrect email or password");
     }
 
-    const token = sign({ id: user.id }, appConfig.jwtSecretKey, {
+    const token = jwt.sign({ id: user.id }, appConfig.jwtSecretKey, {
       expiresIn: "2h",
     });
     return {

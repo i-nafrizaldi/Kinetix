@@ -1,19 +1,31 @@
-import { User } from "./user.type";
-
 export interface Address {
   id: number;
+
   userId: number;
-  user: User;
+
+  label: string | null;
+
   recipientName: string;
+
   phone: string;
-  provinceId: string;
+
+  provinceId: string | null;
+
   provinceName: string;
-  cityId: string;
+
+  cityId: string | null;
+
   cityName: string;
-  districtName: string;
-  postalCode: string;
+
+  districtName: string | null;
+
+  postalCode: string | null;
+
   detail: string;
+
   isDefault: boolean;
-  createdAt: Date;
-  updatedAt: Date;
+
+  createdAt: string;
+
+  updatedAt: string;
 }
