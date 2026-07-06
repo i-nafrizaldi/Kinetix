@@ -1,16 +1,17 @@
 import cors from "cors";
 import express, {
-  type Express,
   json,
   urlencoded,
+  type Express,
+  type NextFunction,
   type Request,
   type Response,
-  type NextFunction,
 } from "express";
-import { UserRouter } from "./routers/user.router.js";
 import { PORT } from "./config.js";
-import { AuthRouter } from "./routers/auth.router.js";
 import { errorMiddleware } from "./middlewares/errorMiddleware.js";
+import { AuthRouter } from "./routers/auth.router.js";
+import { ProductRouter } from "./routers/product.router.js";
+import { UserRouter } from "./routers/user.router.js";
 
 export default class App {
   readonly app: Express;
@@ -53,6 +54,7 @@ export default class App {
   private routes(): void {
     const userRouter = new UserRouter();
     const authRouter = new AuthRouter();
+    const productRouter = new ProductRouter();
 
     this.app.get("/api", (req: Request, res: Response) => {
       res.send(`Hello, Welcome to Kinetix API !`);
@@ -60,8 +62,8 @@ export default class App {
 
     this.app.use("/api/users", userRouter.getRouter());
     this.app.use("/api/auth", authRouter.getRouter());
+    this.app.use("/api/product", productRouter.getRouter());
 
-    
     this.app.use(errorMiddleware);
   }
 

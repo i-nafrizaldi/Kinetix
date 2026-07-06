@@ -39,6 +39,7 @@ export type AddressSumAggregateOutputType = {
 export type AddressMinAggregateOutputType = {
   id: number | null
   userId: number | null
+  label: string | null
   recipientName: string | null
   phone: string | null
   provinceId: string | null
@@ -56,6 +57,7 @@ export type AddressMinAggregateOutputType = {
 export type AddressMaxAggregateOutputType = {
   id: number | null
   userId: number | null
+  label: string | null
   recipientName: string | null
   phone: string | null
   provinceId: string | null
@@ -73,6 +75,7 @@ export type AddressMaxAggregateOutputType = {
 export type AddressCountAggregateOutputType = {
   id: number
   userId: number
+  label: number
   recipientName: number
   phone: number
   provinceId: number
@@ -102,6 +105,7 @@ export type AddressSumAggregateInputType = {
 export type AddressMinAggregateInputType = {
   id?: true
   userId?: true
+  label?: true
   recipientName?: true
   phone?: true
   provinceId?: true
@@ -119,6 +123,7 @@ export type AddressMinAggregateInputType = {
 export type AddressMaxAggregateInputType = {
   id?: true
   userId?: true
+  label?: true
   recipientName?: true
   phone?: true
   provinceId?: true
@@ -136,6 +141,7 @@ export type AddressMaxAggregateInputType = {
 export type AddressCountAggregateInputType = {
   id?: true
   userId?: true
+  label?: true
   recipientName?: true
   phone?: true
   provinceId?: true
@@ -240,6 +246,7 @@ export type AddressGroupByArgs<ExtArgs extends runtime.Types.Extensions.Internal
 export type AddressGroupByOutputType = {
   id: number
   userId: number
+  label: string | null
   recipientName: string
   phone: string
   provinceId: string | null
@@ -280,6 +287,7 @@ export type AddressWhereInput = {
   NOT?: Prisma.AddressWhereInput | Prisma.AddressWhereInput[]
   id?: Prisma.IntFilter<"Address"> | number
   userId?: Prisma.IntFilter<"Address"> | number
+  label?: Prisma.StringNullableFilter<"Address"> | string | null
   recipientName?: Prisma.StringFilter<"Address"> | string
   phone?: Prisma.StringFilter<"Address"> | string
   provinceId?: Prisma.StringNullableFilter<"Address"> | string | null
@@ -298,6 +306,7 @@ export type AddressWhereInput = {
 export type AddressOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  label?: Prisma.SortOrderInput | Prisma.SortOrder
   recipientName?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   provinceId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -320,6 +329,7 @@ export type AddressWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.AddressWhereInput[]
   NOT?: Prisma.AddressWhereInput | Prisma.AddressWhereInput[]
   userId?: Prisma.IntFilter<"Address"> | number
+  label?: Prisma.StringNullableFilter<"Address"> | string | null
   recipientName?: Prisma.StringFilter<"Address"> | string
   phone?: Prisma.StringFilter<"Address"> | string
   provinceId?: Prisma.StringNullableFilter<"Address"> | string | null
@@ -338,6 +348,7 @@ export type AddressWhereUniqueInput = Prisma.AtLeast<{
 export type AddressOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  label?: Prisma.SortOrderInput | Prisma.SortOrder
   recipientName?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   provinceId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -363,6 +374,7 @@ export type AddressScalarWhereWithAggregatesInput = {
   NOT?: Prisma.AddressScalarWhereWithAggregatesInput | Prisma.AddressScalarWhereWithAggregatesInput[]
   id?: Prisma.IntWithAggregatesFilter<"Address"> | number
   userId?: Prisma.IntWithAggregatesFilter<"Address"> | number
+  label?: Prisma.StringNullableWithAggregatesFilter<"Address"> | string | null
   recipientName?: Prisma.StringWithAggregatesFilter<"Address"> | string
   phone?: Prisma.StringWithAggregatesFilter<"Address"> | string
   provinceId?: Prisma.StringNullableWithAggregatesFilter<"Address"> | string | null
@@ -378,6 +390,7 @@ export type AddressScalarWhereWithAggregatesInput = {
 }
 
 export type AddressCreateInput = {
+  label?: string | null
   recipientName: string
   phone: string
   provinceId?: string | null
@@ -396,6 +409,7 @@ export type AddressCreateInput = {
 export type AddressUncheckedCreateInput = {
   id?: number
   userId: number
+  label?: string | null
   recipientName: string
   phone: string
   provinceId?: string | null
@@ -411,6 +425,7 @@ export type AddressUncheckedCreateInput = {
 }
 
 export type AddressUpdateInput = {
+  label?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientName?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   provinceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -429,6 +444,7 @@ export type AddressUpdateInput = {
 export type AddressUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   userId?: Prisma.IntFieldUpdateOperationsInput | number
+  label?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientName?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   provinceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -446,6 +462,7 @@ export type AddressUncheckedUpdateInput = {
 export type AddressCreateManyInput = {
   id?: number
   userId: number
+  label?: string | null
   recipientName: string
   phone: string
   provinceId?: string | null
@@ -461,6 +478,7 @@ export type AddressCreateManyInput = {
 }
 
 export type AddressUpdateManyMutationInput = {
+  label?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientName?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   provinceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -478,6 +496,7 @@ export type AddressUpdateManyMutationInput = {
 export type AddressUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   userId?: Prisma.IntFieldUpdateOperationsInput | number
+  label?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientName?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   provinceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -511,6 +530,7 @@ export type AddressOrderByRelevanceInput = {
 export type AddressCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  label?: Prisma.SortOrder
   recipientName?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   provinceId?: Prisma.SortOrder
@@ -533,6 +553,7 @@ export type AddressAvgOrderByAggregateInput = {
 export type AddressMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  label?: Prisma.SortOrder
   recipientName?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   provinceId?: Prisma.SortOrder
@@ -550,6 +571,7 @@ export type AddressMaxOrderByAggregateInput = {
 export type AddressMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  label?: Prisma.SortOrder
   recipientName?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   provinceId?: Prisma.SortOrder
@@ -612,6 +634,7 @@ export type AddressUncheckedUpdateManyWithoutUserNestedInput = {
 }
 
 export type AddressCreateWithoutUserInput = {
+  label?: string | null
   recipientName: string
   phone: string
   provinceId?: string | null
@@ -628,6 +651,7 @@ export type AddressCreateWithoutUserInput = {
 
 export type AddressUncheckedCreateWithoutUserInput = {
   id?: number
+  label?: string | null
   recipientName: string
   phone: string
   provinceId?: string | null
@@ -674,6 +698,7 @@ export type AddressScalarWhereInput = {
   NOT?: Prisma.AddressScalarWhereInput | Prisma.AddressScalarWhereInput[]
   id?: Prisma.IntFilter<"Address"> | number
   userId?: Prisma.IntFilter<"Address"> | number
+  label?: Prisma.StringNullableFilter<"Address"> | string | null
   recipientName?: Prisma.StringFilter<"Address"> | string
   phone?: Prisma.StringFilter<"Address"> | string
   provinceId?: Prisma.StringNullableFilter<"Address"> | string | null
@@ -690,6 +715,7 @@ export type AddressScalarWhereInput = {
 
 export type AddressCreateManyUserInput = {
   id?: number
+  label?: string | null
   recipientName: string
   phone: string
   provinceId?: string | null
@@ -705,6 +731,7 @@ export type AddressCreateManyUserInput = {
 }
 
 export type AddressUpdateWithoutUserInput = {
+  label?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientName?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   provinceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -721,6 +748,7 @@ export type AddressUpdateWithoutUserInput = {
 
 export type AddressUncheckedUpdateWithoutUserInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
+  label?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientName?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   provinceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -737,6 +765,7 @@ export type AddressUncheckedUpdateWithoutUserInput = {
 
 export type AddressUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
+  label?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   recipientName?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   provinceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -756,6 +785,7 @@ export type AddressUncheckedUpdateManyWithoutUserInput = {
 export type AddressSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   userId?: boolean
+  label?: boolean
   recipientName?: boolean
   phone?: boolean
   provinceId?: boolean
@@ -776,6 +806,7 @@ export type AddressSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
 export type AddressSelectScalar = {
   id?: boolean
   userId?: boolean
+  label?: boolean
   recipientName?: boolean
   phone?: boolean
   provinceId?: boolean
@@ -790,7 +821,7 @@ export type AddressSelectScalar = {
   updatedAt?: boolean
 }
 
-export type AddressOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "recipientName" | "phone" | "provinceId" | "provinceName" | "cityId" | "cityName" | "districtName" | "postalCode" | "detail" | "isDefault" | "createdAt" | "updatedAt", ExtArgs["result"]["address"]>
+export type AddressOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "label" | "recipientName" | "phone" | "provinceId" | "provinceName" | "cityId" | "cityName" | "districtName" | "postalCode" | "detail" | "isDefault" | "createdAt" | "updatedAt", ExtArgs["result"]["address"]>
 export type AddressInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
@@ -803,6 +834,7 @@ export type $AddressPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
     userId: number
+    label: string | null
     recipientName: string
     phone: string
     provinceId: string | null
@@ -1187,6 +1219,7 @@ export interface Prisma__AddressClient<T, Null = never, ExtArgs extends runtime.
 export interface AddressFieldRefs {
   readonly id: Prisma.FieldRef<"Address", 'Int'>
   readonly userId: Prisma.FieldRef<"Address", 'Int'>
+  readonly label: Prisma.FieldRef<"Address", 'String'>
   readonly recipientName: Prisma.FieldRef<"Address", 'String'>
   readonly phone: Prisma.FieldRef<"Address", 'String'>
   readonly provinceId: Prisma.FieldRef<"Address", 'String'>

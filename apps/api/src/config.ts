@@ -1,15 +1,41 @@
 import { config } from "dotenv";
-import { resolve } from "path";
+import { resolve } from "node:path";
+
+// ======================================================
+// ENVIRONMENT
+// ======================================================
 
 export const NODE_ENV = process.env.NODE_ENV || "development";
 
+// ======================================================
+// ENV FILE SELECTION
+// ======================================================
+
 const envFile = NODE_ENV === "development" ? ".env.development" : ".env";
 
-config({ path: resolve(__dirname, `../${envFile}`) });
-config({ path: resolve(__dirname, `../${envFile}.local`), override: true });
+// ======================================================
+// LOAD BASE ENV FILE
+// ======================================================
 
-// Load all environment variables from .env file
+config({
+  path: resolve(process.cwd(), envFile),
+});
 
-export const PORT = process.env.PORT || 8000;
+// ======================================================
+// LOAD LOCAL OVERRIDE
+// ======================================================
+
+config({
+  path: resolve(process.cwd(), `${envFile}.local`),
+  override: true,
+});
+
+// ======================================================
+// APPLICATION CONFIG
+// ======================================================
+
+export const PORT = Number(process.env.PORT) || 8000;
+
 export const DATABASE_URL = process.env.DATABASE_URL || "";
-export const NEXT_BASE_URL = process.env.NEXT_BASE_URL;
+
+export const NEXT_BASE_URL = process.env.NEXT_BASE_URL || "";

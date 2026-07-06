@@ -1,53 +1,700 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
+// ======================================================
+// PRISMA CLIENT
+// ======================================================
 
 generator client {
   provider = "prisma-client"
   output   = "../generated/prisma"
 }
 
+// ======================================================
+// DATABASE
+// ======================================================
+
 datasource db {
   provider = "mysql"
 }
 
-model User {
-  id             Int       @id @default(autoincrement())
-  email          String    @unique
-  fullName       String?
-  password       String?
-  isVerify       Boolean?  @default(false)
-  role           Role      @default(USER)
-  createdAt      DateTime  @default(now())
-  isDelete       Boolean   @default(false)
-  token          String?
-  tokenExpiresIn DateTime?
-  addresses      Address[]
-  updatedAt      DateTime  @updatedAt
-
-  @@map("users")
-}
+// ======================================================
+// ENUMS
+// ======================================================
 
 enum Role {
   USER
   ADMIN
+  SUPER_ADMIN
 }
 
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+}
+
+enum ProductStatus {
+  DRAFT
+  ACTIVE
+  INACTIVE
+  ARCHIVED
+}
+
+enum GeneralStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum VariantStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum CartStatus {
+  ACTIVE
+  CHECKED_OUT
+  ABANDONED
+}
+
+enum OrderStatus {
+  PENDING_PAYMENT
+  PAYMENT_FAILED
+  PAYMENT_EXPIRED
+  PAID
+  ORDER_RECEIVED
+  PACKING
+  SHIPPED
+  COMPLETED
+  CANCELLED
+  REFUNDED
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  EXPIRED
+}
+
+enum ShipmentStatus {
+  PENDING
+  PACKING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+enum DiscountType {
+  PERCENTAGE
+  FIXED_AMOUNT
+}
+
+enum StockMovementType {
+  IN
+  OUT
+  ADJUSTMENT
+  RESERVED
+  RELEASED
+  SOLD
+  CANCELLED_RETURN
+}
+
+// ======================================================
+// USER
+// ======================================================
+
+model User {
+  id       Int        @id @default(autoincrement())
+  email    String     @unique
+  fullName String?
+  password String
+  isVerify Boolean    @default(false)
+  role     Role       @default(USER)
+  status   UserStatus @default(ACTIVE)
+
+  token          String?
+  tokenExpiresIn DateTime?
+
+  addresses     Address[]
+  carts         Cart[]
+  wishlistItems Wishlist[]
+  orders        Order[]
+  voucherUses   VoucherRedemption[]
+
+  stockMovementsCreated StockMovement[] @relation("StockMovementCreatedBy")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+// ======================================================
+// ADDRESS
+// ======================================================
+
 model Address {
-  id            Int      @id @default(autoincrement())
-  userId        Int
-  user          User     @relation(fields: [userId], references: [id])
+  id     Int @id @default(autoincrement())
+  userId Int
+
+  user User @relation(fields: [userId], references: [id])
+
+  label         String?
   recipientName String
   phone         String
-  provinceId    String?
-  provinceName  String
-  cityId        String?
-  cityName      String
-  districtName  String?
-  postalCode    String?
-  detail        String
-  isDefault     Boolean  @default(false)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+
+  provinceId   String?
+  provinceName String
+
+  cityId   String?
+  cityName String
+
+  districtName String?
+  postalCode   String?
+  detail       String
+
+  isDefault Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@map("addresses")
+}
+
+// ======================================================
+// PRODUCT CATEGORY
+// ======================================================
+
+model ProductCategory {
+  id Int @id @default(autoincrement())
+
+  name String @unique
+
+  status GeneralStatus @default(ACTIVE)
+
+  products Product[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@map("product_categories")
+}
+
+// ======================================================
+// SPORT CATEGORY
+// ======================================================
+
+model SportCategory {
+  id Int @id @default(autoincrement())
+
+  name        String  @unique
+  description String?
+  imageUrl    String?
+
+  status GeneralStatus @default(ACTIVE)
+
+  productLinks ProductSportCategory[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@map("sport_categories")
+}
+
+// ======================================================
+// PRODUCT
+// ======================================================
+
+model Product {
+  id Int @id @default(autoincrement())
+
+  name        String
+  brand       String?
+  sku         String  @unique
+  description String?
+
+  basePrice Int
+
+  discountType  DiscountType?
+  discountValue Int?
+
+  status ProductStatus @default(DRAFT)
+
+  categoryId Int
+
+  category ProductCategory @relation(fields: [categoryId], references: [id])
+
+  images        ProductImage[]
+  variants      ProductVariant[]
+  sportLinks    ProductSportCategory[]
+  wishlistItems Wishlist[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([categoryId])
+  @@index([status])
+  @@index([brand])
+  @@map("products")
+}
+
+// ======================================================
+// PRODUCT <-> SPORT CATEGORY
+// MANY-TO-MANY
+// ======================================================
+
+model ProductSportCategory {
+  productId       Int
+  sportCategoryId Int
+
+  product Product @relation(fields: [productId], references: [id])
+
+  sportCategory SportCategory @relation(fields: [sportCategoryId], references: [id])
+
+  @@id([productId, sportCategoryId])
+  @@index([sportCategoryId])
+  @@map("product_sport_categories")
+}
+
+// ======================================================
+// PRODUCT IMAGE
+// ======================================================
+
+model ProductImage {
+  id        Int @id @default(autoincrement())
+  productId Int
+
+  product Product @relation(fields: [productId], references: [id])
+
+  imageUrl String
+  altText  String?
+
+  isPrimary Boolean @default(false)
+  sortOrder Int     @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([productId])
+  @@index([isPrimary])
+  @@map("product_images")
+}
+
+// ======================================================
+// SIZE
+// ======================================================
+
+model Size {
+  id Int @id @default(autoincrement())
+
+  name String
+
+  // Examples:
+  // shoe
+  // apparel
+  // general
+  type String?
+
+  sortOrder Int @default(0)
+
+  status VariantStatus @default(ACTIVE)
+
+  variants ProductVariant[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([type])
+  @@map("sizes")
+}
+
+// ======================================================
+// COLOR
+// ======================================================
+
+model Color {
+  id Int @id @default(autoincrement())
+
+  name    String
+  hexCode String?
+
+  status VariantStatus @default(ACTIVE)
+
+  variants ProductVariant[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@map("colors")
+}
+
+// ======================================================
+// PRODUCT VARIANT
+// ======================================================
+
+model ProductVariant {
+  id Int @id @default(autoincrement())
+
+  productId Int
+  sizeId    Int
+  colorId   Int
+
+  product Product @relation(fields: [productId], references: [id])
+
+  size Size @relation(fields: [sizeId], references: [id])
+
+  color Color @relation(fields: [colorId], references: [id])
+
+  sku String @unique
+
+  stockQty    Int @default(0)
+  reservedQty Int @default(0)
+
+  lowStockThreshold Int @default(3)
+
+  status VariantStatus @default(ACTIVE)
+
+  cartItems      CartItem[]
+  orderItems     OrderItem[]
+  stockMovements StockMovement[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([productId, sizeId, colorId])
+  @@index([productId])
+  @@index([sizeId])
+  @@index([colorId])
+  @@index([status])
+  @@map("product_variants")
+}
+
+// ======================================================
+// STOCK MOVEMENT
+// ======================================================
+
+model StockMovement {
+  id        Int @id @default(autoincrement())
+  variantId Int
+
+  variant ProductVariant @relation(fields: [variantId], references: [id])
+
+  type StockMovementType
+
+  qty       Int
+  beforeQty Int
+  afterQty  Int
+
+  reason String?
+
+  referenceType String?
+  referenceId   String?
+
+  createdById Int?
+
+  createdBy User? @relation("StockMovementCreatedBy", fields: [createdById], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@index([variantId])
+  @@index([createdById])
+  @@index([type])
+  @@index([referenceType, referenceId])
+  @@map("stock_movements")
+}
+
+// ======================================================
+// CART
+// ======================================================
+
+model Cart {
+  id     Int @id @default(autoincrement())
+  userId Int
+
+  user User @relation(fields: [userId], references: [id])
+
+  status CartStatus @default(ACTIVE)
+
+  items CartItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([status])
+  @@map("carts")
+}
+
+// ======================================================
+// CART ITEM
+// ======================================================
+
+model CartItem {
+  id Int @id @default(autoincrement())
+
+  cartId    Int
+  variantId Int
+
+  cart Cart @relation(fields: [cartId], references: [id])
+
+  variant ProductVariant @relation(fields: [variantId], references: [id])
+
+  qty Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([cartId, variantId])
+  @@index([cartId])
+  @@index([variantId])
+  @@map("cart_items")
+}
+
+// ======================================================
+// WISHLIST
+// ======================================================
+
+model Wishlist {
+  id Int @id @default(autoincrement())
+
+  userId    Int
+  productId Int
+
+  user User @relation(fields: [userId], references: [id])
+
+  product Product @relation(fields: [productId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, productId])
+  @@index([userId])
+  @@index([productId])
+  @@map("wishlists")
+}
+
+// ======================================================
+// ORDER
+// ======================================================
+
+model Order {
+  id     Int @id @default(autoincrement())
+  userId Int
+
+  user User @relation(fields: [userId], references: [id])
+
+  orderNumber String @unique
+
+  status OrderStatus @default(PENDING_PAYMENT)
+
+  subtotal Int
+
+  shippingCost Int
+
+  discountTotal Int @default(0)
+
+  grandTotal Int
+
+  // Recipient snapshot at checkout
+  recipientName       String
+  recipientPhone      String
+  shippingAddressText String
+
+  items    OrderItem[]
+  payments Payment[]
+
+  shipment Shipment?
+  invoice  Invoice?
+
+  voucherRedemption VoucherRedemption?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+  @@map("orders")
+}
+
+// ======================================================
+// ORDER ITEM
+// ======================================================
+
+model OrderItem {
+  id Int @id @default(autoincrement())
+
+  orderId   Int
+  variantId Int
+
+  order Order @relation(fields: [orderId], references: [id])
+
+  variant ProductVariant @relation(fields: [variantId], references: [id])
+
+  // Product snapshot at transaction time
+  productName String
+  sizeName    String
+  colorName   String
+  sku         String
+
+  price Int
+
+  qty Int
+
+  subtotal Int
+
+  @@index([orderId])
+  @@index([variantId])
+  @@index([sku])
+  @@map("order_items")
+}
+
+// ======================================================
+// PAYMENT
+// ======================================================
+
+model Payment {
+  id      Int @id @default(autoincrement())
+  orderId Int
+
+  order Order @relation(fields: [orderId], references: [id])
+
+  provider String  @default("MIDTRANS")
+  method   String?
+
+  status PaymentStatus @default(PENDING)
+
+  amount Int
+
+  token       String?
+  redirectUrl String?
+
+  transactionId String?
+
+  expiredAt DateTime
+  paidAt    DateTime?
+
+  rawPayload Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([orderId])
+  @@index([status])
+  @@index([transactionId])
+  @@map("payments")
+}
+
+// ======================================================
+// SHIPMENT
+// ======================================================
+
+model Shipment {
+  id      Int @id @default(autoincrement())
+  orderId Int @unique
+
+  order Order @relation(fields: [orderId], references: [id])
+
+  courierCode String
+  courierName String?
+
+  serviceCode String
+  serviceName String
+
+  cost Int
+
+  etd String?
+
+  trackingNumber String?
+
+  status ShipmentStatus @default(PENDING)
+
+  shippedAt   DateTime?
+  deliveredAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([trackingNumber])
+  @@map("shipments")
+}
+
+// ======================================================
+// INVOICE
+// ======================================================
+
+model Invoice {
+  id      Int @id @default(autoincrement())
+  orderId Int @unique
+
+  order Order @relation(fields: [orderId], references: [id])
+
+  invoiceNumber String @unique
+
+  fileUrl String?
+
+  issuedAt DateTime @default(now())
+
+  @@map("invoices")
+}
+
+// ======================================================
+// VOUCHER
+// ======================================================
+
+model Voucher {
+  id Int @id @default(autoincrement())
+
+  code String @unique
+
+  type  DiscountType
+  value Int
+
+  minPurchase Int?
+
+  maxDiscount Int?
+
+  quota     Int?
+  usedCount Int  @default(0)
+
+  status GeneralStatus @default(ACTIVE)
+
+  validFrom  DateTime?
+  validUntil DateTime?
+
+  redemptions VoucherRedemption[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([validFrom, validUntil])
+  @@map("vouchers")
+}
+
+// ======================================================
+// VOUCHER REDEMPTION
+// ======================================================
+
+model VoucherRedemption {
+  id Int @id @default(autoincrement())
+
+  voucherId Int
+  userId    Int
+  orderId   Int @unique
+
+  voucher Voucher @relation(fields: [voucherId], references: [id])
+
+  user User @relation(fields: [userId], references: [id])
+
+  order Order @relation(fields: [orderId], references: [id])
+
+  redeemedAt DateTime @default(now())
+
+  @@index([voucherId])
+  @@index([userId])
+  @@map("voucher_redemptions")
 }
